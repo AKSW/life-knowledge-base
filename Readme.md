@@ -10,7 +10,7 @@ bring value to the project.
 
 To import the data to a self-hosted instance simply run
 ```shell
-bash update\ virtuoso.sh
+bash update_virtuoso.sh
 ```
 
 For starting the triple store without updating the data just use `docker-compose up -d`.
@@ -34,12 +34,12 @@ The purpose of the parser is to download the most recent version of the CoL (as 
 extension ontology to transfer the information to an .nt-file. It uses Python to parse the 
 catalogue and can use the [Dockerfile](col_parser/Dockerfile) for encapsulation and CD.
 
-#### [update script](update virtuoso.sh)
+#### [Update Script](update_virtuoso.sh)
 The updater first starts the parser to create a current version of the CoL in a rdf format. 
 Then it runs an version of virtuoso without port mappings to 
 [bulk-import](http://vos.openlinksw.com/owiki/wiki/VOS/VirtBulkRDFLoader) the data to the triple store. 
 The script takes about an hour to complete on a standard desktop machine. 
 You can limit the number of Taxons to import using
 ```shell
-bash update\ virtuoso.sh [limit]
+bash update_virtuoso.sh [limit]
 ```
