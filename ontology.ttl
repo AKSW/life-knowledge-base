@@ -1,0 +1,137 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix dwc: <http://rs.tdwg.org/dwc/terms/>.
+@prefix swlr: <http://www.w3.org/2003/11/swrl#>.
+
+@prefix onto: <http://ontology.col.htwk-leipzig.de/>.
+
+onto: a owl:Ontology;
+     rdfs:label "Semantic CoL DwC Extension";
+     rdfs:comment "This ontology defines an Extension of the Darwin Core Ontology (http://rs.tdwg.org/dwc/terms) to be used for the Catalog of life.";
+     dcterms:created "2022-05-19"^^xsd:date.
+
+onto:occursNatively a owl:ObjectProperty ;
+    rdfs:label "occurs natively" ;
+    rdfs:subPropertyOf onto:occurs ;
+    dcterms:isPartOf onto: .
+
+onto:occursDomesticated a owl:ObjectProperty ;
+    rdfs:label "occurs domesticated" ;
+    rdfs:subPropertyOf onto:occurs ;
+    dcterms:isPartOf onto: .
+
+onto:occursAlien a owl:ObjectProperty ;
+    rdfs:label "occurs alien" ;
+    rdfs:subPropertyOf onto:occurs ;
+    dcterms:isPartOf onto: .
+
+onto:occurs a owl:ObjectProperty ;
+    rdfs:label "occurs" ;
+    rdfs:comment "Describes the locality where a given entity appears." ;
+    rdfs:domain dwc:Taxon ;
+    rdfs:range dwc:locality ;
+    dcterms:isPartOf onto: .
+
+onto:occursIDNatively a owl:ObjectProperty ;
+    rdfs:label "occurs natively by ID" ;
+    rdfs:subPropertyOf onto:occursID ;
+    dcterms:isPartOf onto: .
+
+onto:occursIDDomesticated a owl:ObjectProperty ;
+    rdfs:label "occurs domesticated by ID" ;
+    rdfs:subPropertyOf onto:occursID ;
+    dcterms:isPartOf onto: .
+
+onto:occursIDAlien a owl:ObjectProperty ;
+    rdfs:label "occurs alien by ID" ;
+    rdfs:subPropertyOf onto:occursID ;
+    dcterms:isPartOf onto: .
+
+onto:occursID a owl:ObjectProperty ;
+    rdfs:label "occurs by ID" ;
+    rdfs:comment "Descripes the ID of the locality where a given taxon appears." ;
+    rdfs:domain dwc:Taxon ;
+    rdfs:range dwc:Taxon ;
+    dcterms:isPartOf onto: .
+
+onto:parent a owl:ObjectProperty ;
+    rdfs:label "Parent" ;
+    rdfs:comment "Points to the Parent of the Taxon." ;
+    rdfs:domain dwc:Taxon ;
+    rdfs:range dwc:Taxon ;
+    dcterms:isPartOf onto: .
+
+onto:ancestor a owl:ObjectProperty ,
+      owl:TransitiveProperty;
+  rdfs:domain dwc:Taxon ;
+  rdfs:domain dwc:Taxon ;
+  dcterms:isPartOf onto: .
+
+onto:Unranked a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Kingdom a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Phylum a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Class a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Subclass a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Order a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Suborder a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Family a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Genus a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Species a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+onto:Other a owl:Class ;
+    rdfs:subClassOf dwc:Taxon .
+
+# Rule: taxonomicStatus(?s, "synonym") ^ acceptedNameUsage(?s, ?o) -> owl:sameAs(?s, ?o)
+<s> rdf:type swlr:Variable .
+<o> rdf:type swlr:Variable .
+[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
+   rdfs:comment ""^^xsd:string ;
+   rdfs:label "R1"^^xsd:string ;
+   rdf:type swlr:Imp ;
+   swlr:body [ rdf:type swlr:AtomList ;
+                                           rdf:first [ rdf:type swlr:DatavaluedPropertyAtom ;
+                                                       swlr:propertyPredicate dwc:taxonomicStatus ;
+                                                       swlr:argument1 <s> ;
+                                                       swlr:argument2 "synonym"^^xsd:string
+                                                     ] ;
+                                           rdf:rest [ rdf:type swlr:AtomList ;
+                                                      rdf:first [ rdf:type swlr:IndividualPropertyAtom ;
+                                                                  swlr:propertyPredicate dwc:acceptedNameUsage ;
+                                                                  swlr:argument1 <s> ;
+                                                                  swlr:argument2 <o>
+                                                                ] ;
+                                                      rdf:rest rdf:nil
+                                                    ]
+                                         ] ;
+   swlr:head [ rdf:type swlr:AtomList ;
+                                           rdf:first [ rdf:type swlr:IndividualPropertyAtom ;
+                                                       swlr:propertyPredicate owl:sameAs ;
+                                                       swlr:argument1 <s> ;
+                                                       swlr:argument2 <o>
+                                                     ] ;
+                                           rdf:rest rdf:nil
+                                         ]
+ ] .

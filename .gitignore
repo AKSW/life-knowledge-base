@@ -1,0 +1,7 @@
+.idea
+ontologies/
+notebooks/
+
+virtuoso.env
+col_parser/cache
+col_parser/data

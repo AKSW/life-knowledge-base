@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  virtuoso:
+    image: tenforce/virtuoso
+    env_file: virtuoso.env
+    ports:
+    - "8890:8890"
+    - "1111:1111"
+    volumes:
+      - data:/data
+
+volumes:
+  data:
+    name: virtuoso_data
+    external: true
