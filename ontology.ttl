@@ -36,28 +36,6 @@ onto:occurs a owl:ObjectProperty ;
     rdfs:range dwc:locality ;
     dcterms:isPartOf onto: .
 
-onto:occursIDNatively a owl:ObjectProperty ;
-    rdfs:label "occurs natively by ID" ;
-    rdfs:subPropertyOf onto:occursID ;
-    dcterms:isPartOf onto: .
-
-onto:occursIDDomesticated a owl:ObjectProperty ;
-    rdfs:label "occurs domesticated by ID" ;
-    rdfs:subPropertyOf onto:occursID ;
-    dcterms:isPartOf onto: .
-
-onto:occursIDAlien a owl:ObjectProperty ;
-    rdfs:label "occurs alien by ID" ;
-    rdfs:subPropertyOf onto:occursID ;
-    dcterms:isPartOf onto: .
-
-onto:occursID a owl:ObjectProperty ;
-    rdfs:label "occurs by ID" ;
-    rdfs:comment "Descripes the ID of the locality where a given taxon appears." ;
-    rdfs:domain dwc:Taxon ;
-    rdfs:range dwc:Taxon ;
-    dcterms:isPartOf onto: .
-
 onto:parent a owl:ObjectProperty ;
     rdfs:label "Parent" ;
     rdfs:comment "Points to the Parent of the Taxon." ;

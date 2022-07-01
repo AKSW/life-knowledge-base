@@ -50,8 +50,6 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                 g.add((entity, dwc.acceptedNameUsage, URIRef(htwk_col[value])))
             elif key == 'http://rs.tdwg.org/dwc/terms/originalNameUsageID':
                 g.add((entity, dwc.originalNameUsage, URIRef(htwk_col[value])))
-            elif key == 'http://rs.tdwg.org/dwc/terms/scientificNameID':
-                g.add((entity, dwc.scientificName, URIRef(htwk_col[value])))
             elif key == 'http://purl.org/dc/terms/references':
                 g.add((entity, URIRef('http://purl.org/dc/terms/references'), URIRef(value)))
             else:
@@ -78,7 +76,6 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                 locationID = data['http://rs.tdwg.org/dwc/terms/locationID']
 
                 if locality != '':
-                    occurrence_status = data['http://rs.tdwg.org/dwc/terms/occurrenceStatus']
                     if occurrence_status == 'uncertain' or occurrence_status == '':
                         g.add((entity,
                                htwk_col_ontology.occurs,
@@ -101,19 +98,19 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                 if locationID != '':
                     if occurrence_status == 'uncertain' or occurrence_status == '':
                         g.add((entity,
-                               htwk_col_ontology.occursID,
+                               htwk_col_ontology.occurs,
                                Literal(locationID)))
                     elif occurrence_status == 'native':
                         g.add((entity,
-                               htwk_col_ontology.occursIDNatively,
+                               htwk_col_ontology.occursNatively,
                                Literal(locationID)))
                     elif occurrence_status == 'domesticated':
                         g.add((entity,
-                               htwk_col_ontology.occursIDDomesticated,
+                               htwk_col_ontology.occursDomesticated,
                                Literal(locationID)))
                     elif occurrence_status == 'alien':
                         g.add((entity,
-                               htwk_col_ontology.occursIDAlien,
+                               htwk_col_ontology.occursAlien,
                                Literal(locationID)))
                     else:
                         print(f"Distribution unknown: {occurrence_status}!")
