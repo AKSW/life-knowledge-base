@@ -41,10 +41,10 @@ onto:parent a owl:ObjectProperty ;
     rdfs:comment "Points to the Parent of the Taxon." ;
     rdfs:domain dwc:Taxon ;
     rdfs:range dwc:Taxon ;
+    rdfs:subPropertyOf onto:ancestor ;
     dcterms:isPartOf onto: .
 
-onto:ancestor a owl:ObjectProperty ,
-      owl:TransitiveProperty;
+onto:ancestor a owl:TransitiveProperty;
   rdfs:domain dwc:Taxon ;
   rdfs:domain dwc:Taxon ;
   dcterms:isPartOf onto: .
