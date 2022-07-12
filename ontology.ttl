@@ -44,14 +44,12 @@ onto:parent a owl:ObjectProperty ;
     owl:sameAs dwc:parentNameUsage ;
     rdfs:label "Parent" ;
     rdfs:comment "Points to the Parent of the Taxon." ;
-    rdfs:domain dwc:Taxon ;
-    rdfs:range dwc:Taxon ;
     rdfs:subPropertyOf onto:ancestor ;
     dcterms:isPartOf onto: .
 
 onto:ancestor a owl:TransitiveProperty;
   rdfs:domain dwc:Taxon ;
-  rdfs:domain dwc:Taxon ;
+  rdfs:range dwc:Taxon ;
   dcterms:isPartOf onto: .
 
 ###
@@ -91,9 +89,35 @@ onto:Species a owl:Class ;
 onto:Other a owl:Class ;
     rdfs:subClassOf dwc:Taxon .
 
+onto:Name a owl:Class .
+
+onto:VernacularName a owl:Class ;
+    rdfs:subClassOf onto:Name .
+
+onto:ScientificName a owl:Class ;
+    rdfs:subClassOf onto:Name .
+
 ###
 # Rules
 ###
+
+dwc:scientificName rdfs:domain dwc:Taxon ;
+    rdfs:range onto:ScientificName .
+
+dwc:genericName rdfs:domain onto:ScientificName .
+dwc:infragenericEpithet rdfs:domain onto:ScientificName .
+dwc:specificEpithet rdfs:domain onto:ScientificName .
+dwc:infraspecificEpithet rdfs:domain onto:ScientificName .
+dwc:cultivarEpithet rdfs:domain onto:ScientificName .
+dwc:nameAccordingTo rdfs:domain onto:ScientificName .
+dwc:namePublishedIn rdfs:domain onto:ScientificName .
+dwc:nomenclaturalCode rdfs:domain onto:ScientificName .
+dwc:nomenclaturalStatus rdfs:domain onto:ScientificName .
+
+dwc:scientificNameAuthorship rdfs:domain onto:ScientificName .
+
+dwc:vernacularName rdfs:domain dwc:Taxon ;
+   rdfs:range onto:VernacularName .
 
 # Rule: taxonomicStatus(?s, "synonym") ^ acceptedNameUsage(?s, ?o) -> owl:sameAs(?s, ?o)
 <s> rdf:type swlr:Variable .
