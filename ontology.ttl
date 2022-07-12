@@ -14,6 +14,10 @@ onto: a owl:Ontology;
      rdfs:comment "This ontology defines an Extension of the Darwin Core Ontology (http://rs.tdwg.org/dwc/terms) to be used for the Catalog of life.";
      dcterms:created "2022-05-19"^^xsd:date.
 
+###
+# Properties
+###
+
 onto:occursNatively a owl:ObjectProperty ;
     rdfs:label "occurs natively" ;
     rdfs:subPropertyOf onto:occurs ;
@@ -32,11 +36,12 @@ onto:occursAlien a owl:ObjectProperty ;
 onto:occurs a owl:ObjectProperty ;
     rdfs:label "occurs" ;
     rdfs:comment "Describes the locality where a given entity appears." ;
-    rdfs:domain dwc:Taxon ;
+    rdfs:domain [ owl:unionOf ( onto:Other onto:Species ) ] ;
     rdfs:range dwc:locality ;
     dcterms:isPartOf onto: .
 
 onto:parent a owl:ObjectProperty ;
+    owl:sameAs dwc:parentNameUsage ;
     rdfs:label "Parent" ;
     rdfs:comment "Points to the Parent of the Taxon." ;
     rdfs:domain dwc:Taxon ;
@@ -48,6 +53,10 @@ onto:ancestor a owl:TransitiveProperty;
   rdfs:domain dwc:Taxon ;
   rdfs:domain dwc:Taxon ;
   dcterms:isPartOf onto: .
+
+###
+# Classes
+###
 
 onto:Unranked a owl:Class ;
     rdfs:subClassOf dwc:Taxon .
@@ -81,6 +90,10 @@ onto:Species a owl:Class ;
 
 onto:Other a owl:Class ;
     rdfs:subClassOf dwc:Taxon .
+
+###
+# Rules
+###
 
 # Rule: taxonomicStatus(?s, "synonym") ^ acceptedNameUsage(?s, ?o) -> owl:sameAs(?s, ?o)
 <s> rdf:type swlr:Variable .
