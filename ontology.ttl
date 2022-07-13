@@ -57,45 +57,59 @@ onto:ancestor a owl:TransitiveProperty;
 ###
 
 onto:Unranked a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Kingdom a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Phylum a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Class a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Subclass a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Order a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Suborder a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Family a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Genus a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Species a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Other a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
-onto:Name a owl:Class .
+onto:Name a owl:Class ;
+    dcterms:isPartOf onto: .
 
 onto:VernacularName a owl:Class ;
-    rdfs:subClassOf onto:Name .
+    rdfs:subClassOf onto:Name ;
+    dcterms:isPartOf onto:.
 
 onto:ScientificName a owl:Class ;
-    rdfs:subClassOf onto:Name .
+    rdfs:subClassOf onto:Name ;
+    dcterms:isPartOf onto: .
 
 ###
 # Rules
