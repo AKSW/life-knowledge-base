@@ -104,6 +104,9 @@ onto:ScientificName a owl:Class ;
 dwc:scientificName rdfs:domain dwc:Taxon ;
     rdfs:range onto:ScientificName .
 
+dwc:scientificNameID rdfs:domain onto:ScientificName .
+dwc:taxonRank rdfs:domain onto:ScientificName .
+dwc:scientificNameAuthorship rdfs:domain onto:ScientificName .
 dwc:genericName rdfs:domain onto:ScientificName .
 dwc:infragenericEpithet rdfs:domain onto:ScientificName .
 dwc:specificEpithet rdfs:domain onto:ScientificName .
@@ -113,8 +116,6 @@ dwc:nameAccordingTo rdfs:domain onto:ScientificName .
 dwc:namePublishedIn rdfs:domain onto:ScientificName .
 dwc:nomenclaturalCode rdfs:domain onto:ScientificName .
 dwc:nomenclaturalStatus rdfs:domain onto:ScientificName .
-
-dwc:scientificNameAuthorship rdfs:domain onto:ScientificName .
 
 dwc:vernacularName rdfs:domain dwc:Taxon ;
    rdfs:range onto:VernacularName .
