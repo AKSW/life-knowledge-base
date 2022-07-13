@@ -88,7 +88,7 @@ onto:Subclass a owl:Class ;
 
 onto:Order a owl:Class ;
     rdfs:label "Order" ;
-    rdfs:comment "A taxon of the biological rank order" ;
+    rdfs:comment "A taxon of the biological rank order (ordo)" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
@@ -100,7 +100,7 @@ onto:Suborder a owl:Class ;
 
 onto:Family a owl:Class ;
     rdfs:label "Family" ;
-    rdfs:comment "A taxon of the biological rank family" ;
+    rdfs:comment "A taxon of the biological rank family (familia)" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
