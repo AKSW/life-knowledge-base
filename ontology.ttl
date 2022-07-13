@@ -57,57 +57,85 @@ onto:ancestor a owl:TransitiveProperty;
 ###
 
 onto:Unranked a owl:Class ;
+    rdfs:label "Unranked" ;
+    rdfs:comment "A taxon which has no taxonomic rank" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Kingdom a owl:Class ;
+    rdfs:label "Kingdom" ;
+    rdfs:comment "A taxon of the biological rank kingdom (regnum)" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Phylum a owl:Class ;
+    rdfs:label "Phylum" ;
+    rdfs:comment "A taxon of the biological rank phylum" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Class a owl:Class ;
+    rdfs:label "Class" ;
+    rdfs:comment "A taxon of the biological rank class (classis)" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Subclass a owl:Class ;
+    rdfs:label "Subclass" ;
+    rdfs:comment "A taxon of the biological rank subclass" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Order a owl:Class ;
+    rdfs:label "Order" ;
+    rdfs:comment "A taxon of the biological rank order" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Suborder a owl:Class ;
+    rdfs:label "Suborder" ;
+    rdfs:comment "A taxon of the biological rank suborder" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Family a owl:Class ;
+    rdfs:label "Family" ;
+    rdfs:comment "A taxon of the biological rank family" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Genus a owl:Class ;
+    rdfs:label "Genus" ;
+    rdfs:comment "A taxon of the biological rank genus" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Species a owl:Class ;
+    rdfs:label "Species" ;
+    rdfs:comment "A taxon of the biological rank species" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Other a owl:Class ;
+    rdfs:label "Other" ;
+    rdfs:comment "A taxon of a biological rank which does not belong to the normal taxonomic ranks" ;
     rdfs:subClassOf dwc:Taxon ;
     dcterms:isPartOf onto: .
 
 onto:Name a owl:Class ;
+    rdfs:label "Name" ;
+    rdfs:comment "A name of a taxon" ;
     dcterms:isPartOf onto: .
 
 onto:VernacularName a owl:Class ;
+    rdfs:label "Vernacular Name" ;
+    rdfs:comment "The name of taxon which is used in non-scientific contexts" ;
     rdfs:subClassOf onto:Name ;
     dcterms:isPartOf onto:.
 
 onto:ScientificName a owl:Class ;
+    rdfs:label "Scientific Name" ;
+    rdfs:comment "The scientific name of a taxon" ;
     rdfs:subClassOf onto:Name ;
     dcterms:isPartOf onto: .
 
