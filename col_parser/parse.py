@@ -51,35 +51,15 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     case "http://rs.tdwg.org/dwc/terms/taxonRank":
                         g.add((entity, dwc.taxonRank, Literal(value)))  # inherit
                         match value.capitalize():
-                            case "Unranked":
-                                g.add((entity, RDF.type, htwk_col_ontology.Unranked))
-                            case "Kingdom":
-                                g.add((entity, RDF.type, htwk_col_ontology.Kingdom))
-                            case "Phylum":
-                                g.add((entity, RDF.type, htwk_col_ontology.Phylum))
-                            case "Class":
-                                g.add((entity, RDF.type, htwk_col_ontology.Class))
-                            case "Subclass":
-                                g.add((entity, RDF.type, htwk_col_ontology.Subclass))
-                            case "Order":
-                                g.add((entity, RDF.type, htwk_col_ontology.Order))
-                            case "Suborder":
-                                g.add((entity, RDF.type, htwk_col_ontology.Suborder))
-                            case "Family":
-                                g.add((entity, RDF.type, htwk_col_ontology.Family))
-                            case "Genus":
-                                g.add((entity, RDF.type, htwk_col_ontology.Genus))
-                            case "Species":
-                                g.add((entity, RDF.type, htwk_col_ontology.Species))
+                            case "Unranked" | "Kingdom" | "Phylum" | "Class" | "Subclass" | \
+                                 "Order" | "Suborder" | "Family" | "Genus" | "Species" as rank:
+                                g.add((entity, RDF.type, htwk_col_ontology.rank))
                             case _:
                                 g.add((entity, RDF.type, htwk_col_ontology.Other))
                     case "http://rs.tdwg.org/dwc/terms/scientificName":
                         # TODO
                         pass
                     case "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship":
-                        # TODO
-                        pass
-                    case "http://catalogueoflife.org/terms/notho":
                         # TODO
                         pass
                     case "http://rs.tdwg.org/dwc/terms/genericName":
@@ -109,15 +89,14 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     case "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus":
                         # TODO
                         pass
-                    case "http://rs.tdwg.org/dwc/terms/taxonRemarks":
-                        # TODO
-                        pass
                     # dc.references -> inherited as URI
                     case "http://purl.org/dc/terms/references":
                         g.add((entity, URIRef('http://purl.org/dc/terms/references'), URIRef(value)))
                     # inherited attributes
                     case "http://rs.tdwg.org/dwc/terms/datasetID" | \
-                         "http://rs.tdwg.org/dwc/terms/taxonomicStatus":
+                         "http://rs.tdwg.org/dwc/terms/taxonomicStatus" | \
+                         "http://rs.tdwg.org/dwc/terms/taxonRemarks" | \
+                         "http://catalogueoflife.org/terms/notho":
                         g.add((entity, URIRef(key), Literal(value)))
                     case _:
                         raise Exception(f"Could not parse key {key} with value {value} in core rows.")
