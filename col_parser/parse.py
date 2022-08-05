@@ -25,10 +25,12 @@ with DwCAReader(path=sys.argv[1]) as dwca:
     for count, crow in tqdm(enumerate(dwca), total=N_taxons, unit=" Taxons", smoothing=0):
         g = Graph()
 
+        # Create base entity with COL ID as URI and label
         entity = URIRef(htwk_col[crow.id])
         g.add((entity, RDF.type, dwc.Taxon))
         g.add((entity, RDFS.label, Literal(crow.id)))
 
+        # Parse core rows
         for key, value in crow.data.items():
             if value != '':
                 match key:
@@ -101,70 +103,69 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     case _:
                         raise Exception(f"Could not parse key {key} with value {value} in core rows.")
 
-        # Extension rows
+        # Parse extension rows
         for extension_line in crow.extensions:
-            if extension_line.rowtype == "http://rs.gbif.org/terms/1.0/VernacularName":
-                g.add((entity, dwc.vernacularName,
-                       Literal(extension_line.data[dwc.vernacularName.__str__()],
-                               lang=extension_line.data["http://purl.org/dc/terms/language"])
-                       ))
+            match extension_line.rowtype:
+                case "http://rs.gbif.org/terms/1.0/VernacularName":
+                    g.add((entity, dwc.vernacularName,
+                           Literal(extension_line.data["http://rs.tdwg.org/dwc/terms/vernacularName"],
+                                   lang=extension_line.data["http://purl.org/dc/terms/language"])
+                           ))
 
-            elif extension_line.rowtype == "http://rs.gbif.org/terms/1.0/Distribution":
-                # The dwc-extension Distribution can't be parsed to normal triples due to it's structure. To
-                # retain all information from the archive meta statements would be needed. I decided against using
-                # this technique and instead introduced two new properties, occurs and occursID, with their
-                # respective subproperties to capture the information from dwc.locality/dwc.locationID and the
-                # dwc.occurrenceStatus.
+                case "http://rs.gbif.org/terms/1.0/Distribution":
+                    # The dwc-extension 'Distribution' can't be parsed to normal triples due to its structure. To
+                    # retain all information from the archive meta statements would be needed. I decided against using
+                    # this technique and instead introduced two new properties, occurs and occursID, with their
+                    # respective sub-properties to capture the information from dwc.locality/dwc.locationID and the
+                    # dwc.occurrenceStatus.
+                    occurrence_status = extension_line.data['http://rs.tdwg.org/dwc/terms/occurrenceStatus']
+                    locality = extension_line.data['http://rs.tdwg.org/dwc/terms/locality']
+                    locationID = extension_line.data['http://rs.tdwg.org/dwc/terms/locationID']
 
-                data = extension_line.data
-                occurrence_status = data['http://rs.tdwg.org/dwc/terms/occurrenceStatus']
-                locality = data['http://rs.tdwg.org/dwc/terms/locality']
-                locationID = data['http://rs.tdwg.org/dwc/terms/locationID']
+                    if locality != '':
+                        if occurrence_status == 'uncertain' or occurrence_status == '':
+                            g.add((entity,
+                                   htwk_col_ontology.occurs,
+                                   Literal(locality)))
+                        elif occurrence_status == 'native':
+                            g.add((entity,
+                                   htwk_col_ontology.occursNatively,
+                                   Literal(locality)))
+                        elif occurrence_status == 'domesticated':
+                            g.add((entity,
+                                   htwk_col_ontology.occursDomesticated,
+                                   Literal(locality)))
+                        elif occurrence_status == 'alien':
+                            g.add((entity,
+                                   htwk_col_ontology.occursAlien,
+                                   Literal(locality)))
+                        else:
+                            raise Exception(f"Distribution unknown: {occurrence_status}!")
 
-                if locality != '':
-                    if occurrence_status == 'uncertain' or occurrence_status == '':
-                        g.add((entity,
-                               htwk_col_ontology.occurs,
-                               Literal(locality)))
-                    elif occurrence_status == 'native':
-                        g.add((entity,
-                               htwk_col_ontology.occursNatively,
-                               Literal(locality)))
-                    elif occurrence_status == 'domesticated':
-                        g.add((entity,
-                               htwk_col_ontology.occursDomesticated,
-                               Literal(locality)))
-                    elif occurrence_status == 'alien':
-                        g.add((entity,
-                               htwk_col_ontology.occursAlien,
-                               Literal(locality)))
-                    else:
-                        print(f"Distribution unknown: {occurrence_status}!")
+                    if locationID != '':
+                        if occurrence_status == 'uncertain' or occurrence_status == '':
+                            g.add((entity,
+                                   htwk_col_ontology.occurs,
+                                   Literal(locationID)))
+                        elif occurrence_status == 'native':
+                            g.add((entity,
+                                   htwk_col_ontology.occursNatively,
+                                   Literal(locationID)))
+                        elif occurrence_status == 'domesticated':
+                            g.add((entity,
+                                   htwk_col_ontology.occursDomesticated,
+                                   Literal(locationID)))
+                        elif occurrence_status == 'alien':
+                            g.add((entity,
+                                   htwk_col_ontology.occursAlien,
+                                   Literal(locationID)))
+                        else:
+                            raise Exception(f"Distribution unknown: {occurrence_status}!")
 
-                if locationID != '':
-                    if occurrence_status == 'uncertain' or occurrence_status == '':
-                        g.add((entity,
-                               htwk_col_ontology.occurs,
-                               Literal(locationID)))
-                    elif occurrence_status == 'native':
-                        g.add((entity,
-                               htwk_col_ontology.occursNatively,
-                               Literal(locationID)))
-                    elif occurrence_status == 'domesticated':
-                        g.add((entity,
-                               htwk_col_ontology.occursDomesticated,
-                               Literal(locationID)))
-                    elif occurrence_status == 'alien':
-                        g.add((entity,
-                               htwk_col_ontology.occursAlien,
-                               Literal(locationID)))
-                    else:
-                        print(f"Distribution unknown: {occurrence_status}!")
-
-            elif extension_line.rowtype == "http://rs.gbif.org/terms/1.0/SpeciesProfile":
-                for key, value in extension_line.data.items():
-                    if key != dwc.taxonID.__str__() and value != '':
-                        g.add((entity, URIRef(key), Literal(value)))
+                case "http://rs.gbif.org/terms/1.0/SpeciesProfile":
+                    for key, value in extension_line.data.items():
+                        if key != "http://rs.tdwg.org/dwc/terms/taxonID" and value != '':
+                            g.add((entity, URIRef(key), Literal(value)))
 
         g.serialize(sys.stdout.buffer, format='nt', encoding='utf-8')
 
