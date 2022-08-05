@@ -142,14 +142,17 @@ onto:ScientificName a owl:Class ;
 ###
 # Rules
 ###
+dwc:genericName rdfs:domain onto:Name .
 
 dwc:scientificName rdfs:domain dwc:Taxon ;
     rdfs:range onto:ScientificName .
 
+dwc:acceptedNameUsage rdfs:subPropertyOf dwc:scientificName .
+dwc:originalNameUsage rdfs:subPropertyOf dwc:scientificName .
+
 dwc:scientificNameID rdfs:domain onto:ScientificName .
 dwc:taxonRank rdfs:domain onto:ScientificName .
 dwc:scientificNameAuthorship rdfs:domain onto:ScientificName .
-dwc:genericName rdfs:domain onto:ScientificName .
 dwc:infragenericEpithet rdfs:domain onto:ScientificName .
 dwc:specificEpithet rdfs:domain onto:ScientificName .
 dwc:infraspecificEpithet rdfs:domain onto:ScientificName .
@@ -161,35 +164,3 @@ dwc:nomenclaturalStatus rdfs:domain onto:ScientificName .
 
 dwc:vernacularName rdfs:domain dwc:Taxon ;
    rdfs:range onto:VernacularName .
-
-# Rule: taxonomicStatus(?s, "synonym") ^ acceptedNameUsage(?s, ?o) -> owl:sameAs(?s, ?o)
-<s> rdf:type swlr:Variable .
-<o> rdf:type swlr:Variable .
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment ""^^xsd:string ;
-   rdfs:label "R1"^^xsd:string ;
-   rdf:type swlr:Imp ;
-   swlr:body [ rdf:type swlr:AtomList ;
-                                           rdf:first [ rdf:type swlr:DatavaluedPropertyAtom ;
-                                                       swlr:propertyPredicate dwc:taxonomicStatus ;
-                                                       swlr:argument1 <s> ;
-                                                       swlr:argument2 "synonym"^^xsd:string
-                                                     ] ;
-                                           rdf:rest [ rdf:type swlr:AtomList ;
-                                                      rdf:first [ rdf:type swlr:IndividualPropertyAtom ;
-                                                                  swlr:propertyPredicate dwc:acceptedNameUsage ;
-                                                                  swlr:argument1 <s> ;
-                                                                  swlr:argument2 <o>
-                                                                ] ;
-                                                      rdf:rest rdf:nil
-                                                    ]
-                                         ] ;
-   swlr:head [ rdf:type swlr:AtomList ;
-                                           rdf:first [ rdf:type swlr:IndividualPropertyAtom ;
-                                                       swlr:propertyPredicate owl:sameAs ;
-                                                       swlr:argument1 <s> ;
-                                                       swlr:argument2 <o>
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
