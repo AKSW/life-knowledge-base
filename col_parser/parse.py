@@ -3,11 +3,11 @@ import sys
 
 from tqdm import tqdm
 from dwca.read import DwCAReader
-from rdflib import Namespace, URIRef, Graph, Literal
+from rdflib import Namespace, URIRef, Graph, Literal, XSD
 from rdflib.namespace import RDF, RDFS
 
 if len(sys.argv) < 2:
-    print("Please give input file as an argument")
+    print("Please give the input file as an argument")
     exit(1)
 
 # If positiv second arg was given, use it as N_taxons (max number to parse)s
@@ -40,12 +40,9 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     # dwc.parentNameUsageID -> col.parent
                     case "http://rs.tdwg.org/dwc/terms/parentNameUsageID":
                         g.add((entity, htwk_col_ontology.parent, URIRef(htwk_col[value])))
-                    case "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/originalNameUsageID":
-                        # TODO
-                        pass
+                    # dwc.datasetID -> inherited with datatype
+                    case "http://rs.tdwg.org/dwc/terms/datasetID":
+                        g.add((entity, URIRef(key), Literal(value, datatype=XSD.integer)))
                     case "http://rs.tdwg.org/dwc/terms/scientificNameID":
                         # TODO
                         pass
@@ -94,9 +91,12 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     # dc.references -> inherited as URI
                     case "http://purl.org/dc/terms/references":
                         g.add((entity, URIRef('http://purl.org/dc/terms/references'), URIRef(value)))
-                    # inherited attributes
-                    case "http://rs.tdwg.org/dwc/terms/datasetID" | \
-                         "http://rs.tdwg.org/dwc/terms/taxonomicStatus" | \
+                    # attributes inherited with Taxon as object
+                    case "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID" | \
+                         "http://rs.tdwg.org/dwc/terms/originalNameUsageID":
+                        g.add((entity, URIRef(key), htwk_col[value]))
+                    # full inherited attributes
+                    case "http://rs.tdwg.org/dwc/terms/taxonomicStatus" | \
                          "http://rs.tdwg.org/dwc/terms/taxonRemarks" | \
                          "http://catalogueoflife.org/terms/notho":
                         g.add((entity, URIRef(key), Literal(value)))
