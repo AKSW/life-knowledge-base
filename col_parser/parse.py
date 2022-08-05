@@ -55,7 +55,7 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                         match value.capitalize():
                             case "Unranked" | "Kingdom" | "Phylum" | "Class" | "Subclass" | \
                                  "Order" | "Suborder" | "Family" | "Genus" | "Species" as rank:
-                                g.add((entity, RDF.type, htwk_col_ontology.rank))
+                                g.add((entity, RDF.type, htwk_col_ontology[rank]))
                             case _:
                                 g.add((entity, RDF.type, htwk_col_ontology.Other))
                     case "http://rs.tdwg.org/dwc/terms/scientificName":
