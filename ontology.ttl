@@ -14,6 +14,10 @@ onto: a owl:Ontology;
      rdfs:comment "This ontology defines an Extension of the Darwin Core Ontology (http://rs.tdwg.org/dwc/terms) to be used for the Catalog of life.";
      dcterms:created "2022-05-19"^^xsd:date.
 
+###
+# Properties
+###
+
 onto:occursNatively a owl:ObjectProperty ;
     rdfs:label "occurs natively" ;
     rdfs:subPropertyOf onto:occurs ;
@@ -32,84 +36,131 @@ onto:occursAlien a owl:ObjectProperty ;
 onto:occurs a owl:ObjectProperty ;
     rdfs:label "occurs" ;
     rdfs:comment "Describes the locality where a given entity appears." ;
-    rdfs:domain dwc:Taxon ;
+    rdfs:domain [ owl:unionOf ( onto:Other onto:Species ) ] ;
     rdfs:range dwc:locality ;
     dcterms:isPartOf onto: .
 
 onto:parent a owl:ObjectProperty ;
+    owl:sameAs dwc:parentNameUsage ;
     rdfs:label "Parent" ;
     rdfs:comment "Points to the Parent of the Taxon." ;
-    rdfs:domain dwc:Taxon ;
-    rdfs:range dwc:Taxon ;
     rdfs:subPropertyOf onto:ancestor ;
     dcterms:isPartOf onto: .
 
 onto:ancestor a owl:TransitiveProperty;
   rdfs:domain dwc:Taxon ;
-  rdfs:domain dwc:Taxon ;
+  rdfs:range dwc:Taxon ;
   dcterms:isPartOf onto: .
 
+###
+# Classes
+###
+
 onto:Unranked a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Unranked" ;
+    rdfs:comment "A taxon which has no taxonomic rank" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Kingdom a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Kingdom" ;
+    rdfs:comment "A taxon of the biological rank kingdom (regnum)" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Phylum a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Phylum" ;
+    rdfs:comment "A taxon of the biological rank phylum" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Class a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Class" ;
+    rdfs:comment "A taxon of the biological rank class (classis)" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Subclass a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Subclass" ;
+    rdfs:comment "A taxon of the biological rank subclass" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Order a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Order" ;
+    rdfs:comment "A taxon of the biological rank order (ordo)" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Suborder a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Suborder" ;
+    rdfs:comment "A taxon of the biological rank suborder" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Family a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Family" ;
+    rdfs:comment "A taxon of the biological rank family (familia)" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Genus a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Genus" ;
+    rdfs:comment "A taxon of the biological rank genus" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Species a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Species" ;
+    rdfs:comment "A taxon of the biological rank species" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
 onto:Other a owl:Class ;
-    rdfs:subClassOf dwc:Taxon .
+    rdfs:label "Other" ;
+    rdfs:comment "A taxon of a biological rank which does not belong to the normal taxonomic ranks" ;
+    rdfs:subClassOf dwc:Taxon ;
+    dcterms:isPartOf onto: .
 
-# Rule: taxonomicStatus(?s, "synonym") ^ acceptedNameUsage(?s, ?o) -> owl:sameAs(?s, ?o)
-<s> rdf:type swlr:Variable .
-<o> rdf:type swlr:Variable .
-[ <http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled> "true"^^xsd:boolean ;
-   rdfs:comment ""^^xsd:string ;
-   rdfs:label "R1"^^xsd:string ;
-   rdf:type swlr:Imp ;
-   swlr:body [ rdf:type swlr:AtomList ;
-                                           rdf:first [ rdf:type swlr:DatavaluedPropertyAtom ;
-                                                       swlr:propertyPredicate dwc:taxonomicStatus ;
-                                                       swlr:argument1 <s> ;
-                                                       swlr:argument2 "synonym"^^xsd:string
-                                                     ] ;
-                                           rdf:rest [ rdf:type swlr:AtomList ;
-                                                      rdf:first [ rdf:type swlr:IndividualPropertyAtom ;
-                                                                  swlr:propertyPredicate dwc:acceptedNameUsage ;
-                                                                  swlr:argument1 <s> ;
-                                                                  swlr:argument2 <o>
-                                                                ] ;
-                                                      rdf:rest rdf:nil
-                                                    ]
-                                         ] ;
-   swlr:head [ rdf:type swlr:AtomList ;
-                                           rdf:first [ rdf:type swlr:IndividualPropertyAtom ;
-                                                       swlr:propertyPredicate owl:sameAs ;
-                                                       swlr:argument1 <s> ;
-                                                       swlr:argument2 <o>
-                                                     ] ;
-                                           rdf:rest rdf:nil
-                                         ]
- ] .
+onto:Name a owl:Class ;
+    rdfs:label "Name" ;
+    rdfs:comment "A name of a taxon" ;
+    dcterms:isPartOf onto: .
+
+onto:VernacularName a owl:Class ;
+    rdfs:label "Vernacular Name" ;
+    rdfs:comment "The name of taxon which is used in non-scientific contexts" ;
+    rdfs:subClassOf onto:Name ;
+    dcterms:isPartOf onto:.
+
+onto:ScientificName a owl:Class ;
+    rdfs:label "Scientific Name" ;
+    rdfs:comment "The scientific name of a taxon" ;
+    rdfs:subClassOf onto:Name ;
+    dcterms:isPartOf onto: .
+
+###
+# Rules
+###
+dwc:genericName rdfs:domain onto:Name .
+
+dwc:scientificName rdfs:domain dwc:Taxon ;
+    rdfs:range onto:ScientificName .
+
+dwc:acceptedNameUsage rdfs:subPropertyOf dwc:scientificName .
+dwc:originalNameUsage rdfs:subPropertyOf dwc:scientificName .
+
+dwc:scientificNameID rdfs:domain onto:ScientificName .
+dwc:taxonRank rdfs:domain onto:ScientificName .
+dwc:scientificNameAuthorship rdfs:domain onto:ScientificName .
+dwc:infragenericEpithet rdfs:domain onto:ScientificName .
+dwc:specificEpithet rdfs:domain onto:ScientificName .
+dwc:infraspecificEpithet rdfs:domain onto:ScientificName .
+dwc:cultivarEpithet rdfs:domain onto:ScientificName .
+dwc:nameAccordingTo rdfs:domain onto:ScientificName .
+dwc:namePublishedIn rdfs:domain onto:ScientificName .
+dwc:nomenclaturalCode rdfs:domain onto:ScientificName .
+dwc:nomenclaturalStatus rdfs:domain onto:ScientificName .
+
+dwc:vernacularName rdfs:domain dwc:Taxon ;
+   rdfs:range onto:VernacularName .
