@@ -1,5 +1,6 @@
 import csv
 import sys
+import urllib.parse
 
 from tqdm import tqdm
 from dwca.read import DwCAReader
@@ -21,13 +22,15 @@ htwk_col_taxons = Namespace("http://col.htwk-leipzig.de/taxon/")
 htwk_col_names = Namespace("http://col.htwk-leipzig.de/name/")
 htwk_col_ontology = Namespace("http://ontology.col.htwk-leipzig.de/")
 
+urlencode = urllib.parse.quote_plus
+
 csv.field_size_limit(sys.maxsize)  # Needed for iteration of col-data
 with DwCAReader(path=sys.argv[1]) as dwca:
     for count, crow in tqdm(enumerate(dwca), total=N_taxons, unit=" Taxons", smoothing=0):
         g = Graph()
 
         # Create base entity with COL ID as URI and label
-        entity = htwk_col_taxons[crow.id]
+        entity = htwk_col_taxons[urlencode(crow.id)]
         g.add((entity, RDF.type, dwc.Taxon))
         g.add((entity, RDFS.label, Literal(crow.id)))
 
@@ -40,7 +43,7 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                         continue
                     # dwc.parentNameUsageID -> col.parent
                     case "http://rs.tdwg.org/dwc/terms/parentNameUsageID":
-                        g.add((entity, htwk_col_ontology.parent, htwk_col_taxons[value]))
+                        g.add((entity, htwk_col_ontology.parent, htwk_col_taxons[urlencode(value)]))
                     # dwc.datasetID -> inherited with datatype
                     case "http://rs.tdwg.org/dwc/terms/datasetID":
                         g.add((entity, URIRef(key), Literal(value, datatype=XSD.integer)))
@@ -95,7 +98,7 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     # attributes inherited with Taxon as object
                     case "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID" | \
                          "http://rs.tdwg.org/dwc/terms/originalNameUsageID":
-                        g.add((entity, URIRef(key), htwk_col_taxons[value]))
+                        g.add((entity, URIRef(key), htwk_col_taxons[urlencode(value)]))
                     # full inherited attributes
                     case "http://rs.tdwg.org/dwc/terms/taxonomicStatus" | \
                          "http://rs.tdwg.org/dwc/terms/taxonRemarks" | \
@@ -111,10 +114,9 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                 case "http://rs.gbif.org/terms/1.0/VernacularName":
                     name = extension_line.data["http://rs.tdwg.org/dwc/terms/vernacularName"]
                     lang = extension_line.data["http://purl.org/dc/terms/language"]
-                    vname = htwk_col_names[f"{count}_{name}"]
-                    g.add((vname, RDF.type, htwk_col_ontology.VernacularName))  # Count added for prohibiting collisions
-                    g.add((vname, RDFS.label, name))
-                    g.add((vname, RDF.language, lang))
+                    vname = htwk_col_names[urlencode(f"{count}_{name}")] # Count added for prohibiting collisions
+                    g.add((vname, RDF.type, htwk_col_ontology.VernacularName))
+                    g.add((vname, RDFS.label, Literal(name, lang=lang)))
                     g.add((entity, dwc.vernacularName, vname))
 
                 case "http://rs.gbif.org/terms/1.0/Distribution":
