@@ -170,9 +170,14 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                             raise Exception(f"Distribution unknown: {occurrence_status}!")
 
                 case "http://rs.gbif.org/terms/1.0/SpeciesProfile":
-                    for key, value in extension_line.data.items():
-                        if key != "http://rs.tdwg.org/dwc/terms/taxonID" and value != '':
-                            g.add((entity, URIRef(key), Literal(value)))
+                    if extension_line.data["http://rs.gbif.org/terms/1.0/isExtinct"] == 'true':
+                        g.add((entity, htwk_col_ontology.hasStatus, htwk_col_ontology.EX))
+                    if extension_line.data["http://rs.gbif.org/terms/1.0/isMarine"] == 'true':
+                        g.add((entity, htwk_col_ontology.livesIn, htwk_col_ontology.Marine))
+                    if extension_line.data["http://rs.gbif.org/terms/1.0/isFreshwater"] == 'true':
+                        g.add((entity, htwk_col_ontology.livesIn, htwk_col_ontology.Freshwater))
+                    if extension_line.data["http://rs.gbif.org/terms/1.0/isTerrestrial"] == 'true':
+                        g.add((entity, htwk_col_ontology.livesIn, htwk_col_ontology.Terrestrial))
 
         g.serialize(sys.stdout.buffer, format='nt', encoding='utf-8')
 
