@@ -52,6 +52,12 @@ onto:ancestor a owl:TransitiveProperty;
   rdfs:range dwc:Taxon ;
   dcterms:isPartOf onto: .
 
+onto:livesIn a owl:ObjectProperty ;
+    rdfs:label "lives in" ;
+    rdfs:domain dwc:Taxon ;
+    rdfs:range onto:Environment ;
+    dcterms:isPartOf onto: .
+
 ###
 # Classes
 ###
@@ -139,6 +145,10 @@ onto:ScientificName a owl:Class ;
     rdfs:subClassOf onto:Name ;
     dcterms:isPartOf onto: .
 
+onto:Environment a owl:Class ;
+    rdfs:label "Environment" ;
+    dcterms:isPartOf onto: .
+
 ###
 # Rules
 ###
@@ -164,3 +174,14 @@ dwc:nomenclaturalStatus rdfs:domain onto:ScientificName .
 
 dwc:vernacularName rdfs:domain dwc:Taxon ;
    rdfs:range onto:VernacularName .
+
+
+###
+# Instances
+###
+
+onto:Marine a onto:Environment .
+
+onto:Freshwater a onto:Environment .
+
+onto:Terrestrial a onto:Environment .
