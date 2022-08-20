@@ -18,9 +18,9 @@ else:
     N_taxons = 0
 
 dwc = Namespace("http://rs.tdwg.org/dwc/terms/")
-htwk_col_taxons = Namespace("http://col.htwk-leipzig.de/taxon/")
-htwk_col_names = Namespace("http://col.htwk-leipzig.de/name/")
-htwk_col_ontology = Namespace("http://ontology.col.htwk-leipzig.de/")
+taxons = Namespace("http://col.htwk-leipzig.de/taxon/")
+names = Namespace("http://col.htwk-leipzig.de/name/")
+onto = Namespace("http://ontology.col.htwk-leipzig.de/")
 
 urlencode = urllib.parse.quote_plus
 
@@ -30,7 +30,7 @@ with DwCAReader(path=sys.argv[1]) as dwca:
         g = Graph()
 
         # Create base entity with COL ID as URI and label
-        entity = htwk_col_taxons[urlencode(crow.id)]
+        entity = taxons[urlencode(crow.id)]
         g.add((entity, RDF.type, dwc.Taxon))
         g.add((entity, RDFS.label, Literal(crow.id)))
 
@@ -43,7 +43,7 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                         continue
                     # dwc.parentNameUsageID -> col.parent
                     case "http://rs.tdwg.org/dwc/terms/parentNameUsageID":
-                        g.add((entity, htwk_col_ontology.parent, htwk_col_taxons[urlencode(value)]))
+                        g.add((entity, onto.parent, taxons[urlencode(value)]))
                     # dwc.datasetID -> inherited with datatype
                     case "http://rs.tdwg.org/dwc/terms/datasetID":
                         g.add((entity, URIRef(key), Literal(value, datatype=XSD.integer)))
@@ -56,9 +56,9 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                         match value.capitalize():
                             case "Unranked" | "Kingdom" | "Phylum" | "Class" | "Subclass" | \
                                  "Order" | "Suborder" | "Family" | "Genus" | "Species" as rank:
-                                g.add((entity, RDF.type, htwk_col_ontology[rank]))
+                                g.add((entity, RDF.type, onto[rank]))
                             case _:
-                                g.add((entity, RDF.type, htwk_col_ontology.Other))
+                                g.add((entity, RDF.type, onto.Other))
                     case "http://rs.tdwg.org/dwc/terms/scientificName":
                         # TODO
                         pass
@@ -98,7 +98,7 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     # attributes inherited with Taxon as object
                     case "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID" | \
                          "http://rs.tdwg.org/dwc/terms/originalNameUsageID":
-                        g.add((entity, URIRef(key), htwk_col_taxons[urlencode(value)]))
+                        g.add((entity, URIRef(key), taxons[urlencode(value)]))
                     # full inherited attributes
                     case "http://rs.tdwg.org/dwc/terms/taxonomicStatus" | \
                          "http://rs.tdwg.org/dwc/terms/taxonRemarks" | \
@@ -114,8 +114,8 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                 case "http://rs.gbif.org/terms/1.0/VernacularName":
                     name = extension_line.data["http://rs.tdwg.org/dwc/terms/vernacularName"]
                     lang = extension_line.data["http://purl.org/dc/terms/language"]
-                    vname = htwk_col_names[urlencode(f"{count}_{name}")] # Count added for prohibiting collisions
-                    g.add((vname, RDF.type, htwk_col_ontology.VernacularName))
+                    vname = names[urlencode(f"{count}_{name}")] # Count added for prohibiting collisions
+                    g.add((vname, RDF.type, onto.VernacularName))
                     g.add((vname, RDFS.label, Literal(name, lang=lang)))
                     g.add((entity, dwc.vernacularName, vname))
 
@@ -132,19 +132,19 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     if locality != '':
                         if occurrence_status == 'uncertain' or occurrence_status == '':
                             g.add((entity,
-                                   htwk_col_ontology.occurs,
+                                   onto.occurs,
                                    Literal(locality)))
                         elif occurrence_status == 'native':
                             g.add((entity,
-                                   htwk_col_ontology.occursNatively,
+                                   onto.occursNatively,
                                    Literal(locality)))
                         elif occurrence_status == 'domesticated':
                             g.add((entity,
-                                   htwk_col_ontology.occursDomesticated,
+                                   onto.occursDomesticated,
                                    Literal(locality)))
                         elif occurrence_status == 'alien':
                             g.add((entity,
-                                   htwk_col_ontology.occursAlien,
+                                   onto.occursAlien,
                                    Literal(locality)))
                         else:
                             raise Exception(f"Distribution unknown: {occurrence_status}!")
@@ -152,32 +152,32 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     if locationID != '':
                         if occurrence_status == 'uncertain' or occurrence_status == '':
                             g.add((entity,
-                                   htwk_col_ontology.occurs,
+                                   onto.occurs,
                                    Literal(locationID)))
                         elif occurrence_status == 'native':
                             g.add((entity,
-                                   htwk_col_ontology.occursNatively,
+                                   onto.occursNatively,
                                    Literal(locationID)))
                         elif occurrence_status == 'domesticated':
                             g.add((entity,
-                                   htwk_col_ontology.occursDomesticated,
+                                   onto.occursDomesticated,
                                    Literal(locationID)))
                         elif occurrence_status == 'alien':
                             g.add((entity,
-                                   htwk_col_ontology.occursAlien,
+                                   onto.occursAlien,
                                    Literal(locationID)))
                         else:
                             raise Exception(f"Distribution unknown: {occurrence_status}!")
 
                 case "http://rs.gbif.org/terms/1.0/SpeciesProfile":
                     if extension_line.data["http://rs.gbif.org/terms/1.0/isExtinct"] == 'true':
-                        g.add((entity, htwk_col_ontology.hasStatus, htwk_col_ontology.EX))
+                        g.add((entity, onto.hasStatus, onto.EX))
                     if extension_line.data["http://rs.gbif.org/terms/1.0/isMarine"] == 'true':
-                        g.add((entity, htwk_col_ontology.livesIn, htwk_col_ontology.Marine))
+                        g.add((entity, onto.livesIn, onto.Marine))
                     if extension_line.data["http://rs.gbif.org/terms/1.0/isFreshwater"] == 'true':
-                        g.add((entity, htwk_col_ontology.livesIn, htwk_col_ontology.Freshwater))
+                        g.add((entity, onto.livesIn, onto.Freshwater))
                     if extension_line.data["http://rs.gbif.org/terms/1.0/isTerrestrial"] == 'true':
-                        g.add((entity, htwk_col_ontology.livesIn, htwk_col_ontology.Terrestrial))
+                        g.add((entity, onto.livesIn, onto.Terrestrial))
 
         g.serialize(sys.stdout.buffer, format='nt', encoding='utf-8')
 
