@@ -58,6 +58,12 @@ onto:livesIn a owl:ObjectProperty ;
     rdfs:range onto:Environment ;
     dcterms:isPartOf onto: .
 
+onto:hasStatus a owl:ObjectProperty ;
+    rdfs:label "has status" ;
+    rdfs:domain dwc:Taxon ;
+    rdfs:range onto:ConservationStatus ;
+    dcterms:isPartOf onto: .
+
 ###
 # Classes
 ###
