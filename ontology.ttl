@@ -58,8 +58,8 @@ onto:livesIn a owl:ObjectProperty ;
     rdfs:range onto:Environment ;
     dcterms:isPartOf onto: .
 
-onto:hasStatus a owl:ObjectProperty ;
-    rdfs:label "has status" ;
+onto:conservationStatus a owl:ObjectProperty ;
+    rdfs:label "has conservation status" ;
     rdfs:domain dwc:Taxon ;
     rdfs:range onto:ConservationStatus ;
     dcterms:isPartOf onto: .
@@ -192,6 +192,9 @@ dwc:nameAccordingTo rdfs:domain onto:ScientificName .
 dwc:namePublishedIn rdfs:domain onto:ScientificName .
 dwc:nomenclaturalCode rdfs:domain onto:ScientificName .
 dwc:nomenclaturalStatus rdfs:domain onto:ScientificName .
+
+dwc:taxonomicStatus rdfs:domain dwc:Taxon ;
+    rdfs:range onto:TaxonomicStatus .
 
 dwc:vernacularName rdfs:domain dwc:Taxon ;
    rdfs:range onto:VernacularName .
