@@ -61,6 +61,23 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     # dwc.scientificName -> label for scientific Name object
                     case "http://rs.tdwg.org/dwc/terms/scientificName":
                         g.add((sname, RDFS.label, Literal(value)))
+                    # dwc.taxonomicStatus -> TaxonomicStatus of scientific Name object
+                    case "http://rs.tdwg.org/dwc/terms/taxonomicStatus":
+                        match value:
+                            case "accepted":
+                                g.add((sname, dwc.taxonomicStatus, onto.accepted))
+                            case "synonym":
+                                g.add((sname, dwc.taxonomicStatus, onto.synonym))
+                            case "ambiguous synonym":
+                                g.add((sname, dwc.taxonomicStatus, onto.ambiguous_synonym))
+                            case "provisionally accepted":
+                                g.add((sname, dwc.taxonomicStatus, onto.provisionally_accepted))
+                            case "misapplied":
+                                g.add((sname, dwc.taxonomicStatus, onto.misapplied))
+                            case "unresolved":
+                                g.add((sname, dwc.taxonomicStatus, onto.unresolved))
+                            case _:
+                                raise Exception(f"Unknown dwc:taxonomicStatus: {value} at taxon {crow.id}.")
                     # dc.references -> inherited as URI
                     case "http://purl.org/dc/terms/references":
                         g.add((entity, URIRef(key), URIRef(value)))
@@ -69,8 +86,7 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                          "http://rs.tdwg.org/dwc/terms/originalNameUsageID":
                         g.add((entity, URIRef(key), taxons[urlencode(value)]))
                     # fully inherited attributes
-                    case "http://rs.tdwg.org/dwc/terms/taxonomicStatus" | \
-                         "http://rs.tdwg.org/dwc/terms/taxonRemarks" | \
+                    case "http://rs.tdwg.org/dwc/terms/taxonRemarks" | \
                          "http://catalogueoflife.org/terms/notho":
                         g.add((entity, URIRef(key), Literal(value)))
                     # fully inherited attributes to sname

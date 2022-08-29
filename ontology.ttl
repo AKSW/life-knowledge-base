@@ -166,6 +166,10 @@ onto:ConservationStatus a owl:Class ;
     rdfs:label "Conservation Status" ;
     dcterms:isPartOf onto: .
 
+onto:TaxonomicStatus a owl:Class ;
+    rdfs:label "Taxonomic Status" ;
+    dcterms:isPartOf onto: .
+
 ###
 # Rules
 ###
@@ -211,3 +215,11 @@ onto:VU a onto:ConservationStatus . # Vulnerable
 onto:NT a onto:ConservationStatus . # Near Threatened
 onto:CD a onto:ConservationStatus . # Conservation Dependent
 onto:LC a onto:ConservationStatus . # Least Concern
+
+# Taxonomic Status
+onto:accepted a onto:TaxonomicStatus .
+onto:synonym a onto:TaxonomicStatus .
+onto:ambiguous_synonym a onto:TaxonomicStatus .
+onto:provisionally_accepted a onto:TaxonomicStatus .
+onto:misapplied a onto:TaxonomicStatus .
+onto:unresolved a onto:TaxonomicStatus .
