@@ -64,6 +64,13 @@ onto:hasStatus a owl:ObjectProperty ;
     rdfs:range onto:ConservationStatus ;
     dcterms:isPartOf onto: .
 
+onto:synonymOf a owl:TransitiveProperty ;
+    a owl:SymmetricProperty ;
+    rdfs:label "synonym of" ;
+    rdfs:domain onto:ScientificName ;
+    rdfs:range onto:ScientificName ;
+    dcterms:isPartOf onto: .
+
 ###
 # Classes
 ###
