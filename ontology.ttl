@@ -202,24 +202,41 @@ dwc:vernacularName rdfs:domain dwc:Taxon ;
 ###
 
 # Environments
-onto:Marine a onto:Environment .
-onto:Freshwater a onto:Environment .
-onto:Terrestrial a onto:Environment .
+onto:Marine a onto:Environment ;
+    rdfs:label "Marine" .
+onto:Freshwater a onto:Environment ;
+    rdfs:label "Freshwater" .
+onto:Terrestrial a onto:Environment ;
+    rdfs:label "Terrestrial" .
 
 # Conservation Status
-onto:EX a onto:ConservationStatus . # Extinct
-onto:EW a onto:ConservationStatus . # Extinct in the Wild
-onto:CR a onto:ConservationStatus . # Critically Endangered
-onto:EN a onto:ConservationStatus . # Endangered
-onto:VU a onto:ConservationStatus . # Vulnerable
-onto:NT a onto:ConservationStatus . # Near Threatened
-onto:CD a onto:ConservationStatus . # Conservation Dependent
-onto:LC a onto:ConservationStatus . # Least Concern
+onto:EX a onto:ConservationStatus ;
+    rdfs:label "Extinct" .
+onto:EW a onto:ConservationStatus ;
+    rdfs:label "Extinct in the Wild" .
+onto:CR a onto:ConservationStatus ;
+    rdfs:label "Critically Endangered" .
+onto:EN a onto:ConservationStatus ;
+    rdfs:label "Endangered" .
+onto:VU a onto:ConservationStatus ;
+    rdfs:label "Vulnerable" .
+onto:NT a onto:ConservationStatus ;
+    rdfs:label "Near Threatened" .
+onto:CD a onto:ConservationStatus ;
+    rdfs:label "Conservation Dependent" .
+onto:LC a onto:ConservationStatus ;
+    rdfs:label "Least Concern" .
 
 # Taxonomic Status
-onto:accepted a onto:TaxonomicStatus .
-onto:synonym a onto:TaxonomicStatus .
-onto:ambiguous_synonym a onto:TaxonomicStatus .
-onto:provisionally_accepted a onto:TaxonomicStatus .
-onto:misapplied a onto:TaxonomicStatus .
-onto:unresolved a onto:TaxonomicStatus .
+onto:accepted a onto:TaxonomicStatus ;
+    rdfs:label "accepted" .
+onto:synonym a onto:TaxonomicStatus ;
+    rdfs:label "synonym" .
+onto:ambiguous_synonym a onto:TaxonomicStatus ;
+    rdfs:label "ambiguous synonym" .
+onto:provisionally_accepted a onto:TaxonomicStatus ;
+    rdfs:label "provisionally accepted" .
+onto:misapplied a onto:TaxonomicStatus ;
+    rdfs:label "misapplied" .
+onto:unresolved a onto:TaxonomicStatus ;
+    rdfs:label "unresolved" .
