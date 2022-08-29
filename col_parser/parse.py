@@ -2,6 +2,8 @@ import csv
 import sys
 import urllib.parse
 
+urlencode = urllib.parse.quote_plus
+
 from tqdm import tqdm
 from dwca.read import DwCAReader
 from rdflib import Namespace, URIRef, Graph, Literal, XSD
@@ -22,17 +24,17 @@ taxons = Namespace("http://col.htwk-leipzig.de/taxon/")
 names = Namespace("http://col.htwk-leipzig.de/name/")
 onto = Namespace("http://ontology.col.htwk-leipzig.de/")
 
-urlencode = urllib.parse.quote_plus
-
 csv.field_size_limit(sys.maxsize)  # Needed for iteration of col-data
 with DwCAReader(path=sys.argv[1]) as dwca:
     for count, crow in tqdm(enumerate(dwca), total=N_taxons, unit=" Taxons", smoothing=0):
         g = Graph()
 
-        # Create base entity with COL ID as URI and label
+        # Create base entity and name with COL ID as URI and label
         entity = taxons[urlencode(crow.id)]
+        sname = names[urlencode(crow.id)]
         g.add((entity, RDF.type, dwc.Taxon))
         g.add((entity, RDFS.label, Literal(crow.id)))
+        g.add((entity, dwc.scientificName, sname))
 
         # Parse core rows
         for key, value in crow.data.items():
@@ -47,51 +49,18 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     # dwc.datasetID -> inherited with datatype
                     case "http://rs.tdwg.org/dwc/terms/datasetID":
                         g.add((entity, URIRef(key), Literal(value, datatype=XSD.integer)))
-                    case "http://rs.tdwg.org/dwc/terms/scientificNameID":
-                        # TODO
-                        pass
-                    # dwc.taxonRank -> entity a onto.<Rank>, inherited
+                    # dwc.taxonRank -> entity a onto.<Rank>, scientific name inherits
                     case "http://rs.tdwg.org/dwc/terms/taxonRank":
-                        g.add((entity, dwc.taxonRank, Literal(value)))  # inherit
+                        g.add((sname, dwc.taxonRank, Literal(value)))  # inherit
                         match value.capitalize():
                             case "Unranked" | "Kingdom" | "Phylum" | "Class" | "Subclass" | \
                                  "Order" | "Suborder" | "Family" | "Genus" | "Species" as rank:
                                 g.add((entity, RDF.type, onto[rank]))
                             case _:
                                 g.add((entity, RDF.type, onto.Other))
+                    # dwc.scientificName -> label for scientific Name object
                     case "http://rs.tdwg.org/dwc/terms/scientificName":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/genericName":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/infragenericEpithet":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/specificEpithet":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/infraspecificEpithet":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/cultivarEpithet":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/nameAccordingTo":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/namePublishedIn":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/nomenclaturalCode":
-                        # TODO
-                        pass
-                    case "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus":
-                        # TODO
-                        pass
+                        g.add((sname, RDFS.label, Literal(value)))
                     # dc.references -> inherited as URI
                     case "http://purl.org/dc/terms/references":
                         g.add((entity, URIRef(key), URIRef(value)))
@@ -99,11 +68,24 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                     case "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID" | \
                          "http://rs.tdwg.org/dwc/terms/originalNameUsageID":
                         g.add((entity, URIRef(key), taxons[urlencode(value)]))
-                    # full inherited attributes
+                    # fully inherited attributes
                     case "http://rs.tdwg.org/dwc/terms/taxonomicStatus" | \
                          "http://rs.tdwg.org/dwc/terms/taxonRemarks" | \
                          "http://catalogueoflife.org/terms/notho":
                         g.add((entity, URIRef(key), Literal(value)))
+                    # fully inherited attributes to sname
+                    case "http://rs.tdwg.org/dwc/terms/scientificNameID" | \
+                         "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship" | \
+                         "http://rs.tdwg.org/dwc/terms/genericName" | \
+                         "http://rs.tdwg.org/dwc/terms/infragenericEpithet" | \
+                         "http://rs.tdwg.org/dwc/terms/specificEpithet" | \
+                         "http://rs.tdwg.org/dwc/terms/infraspecificEpithet" | \
+                         "http://rs.tdwg.org/dwc/terms/cultivarEpithet" | \
+                         "http://rs.tdwg.org/dwc/terms/nameAccordingTo" | \
+                         "http://rs.tdwg.org/dwc/terms/namePublishedIn" | \
+                         "http://rs.tdwg.org/dwc/terms/nomenclaturalCode" | \
+                         "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus":
+                        g.add((sname, URIRef(key), Literal(value)))
                     case _:
                         raise Exception(f"Could not parse key {key} with value {value} in core rows.")
 
@@ -112,12 +94,12 @@ with DwCAReader(path=sys.argv[1]) as dwca:
             match extension_line.rowtype:
                 # VernacularName extension -> add onto:VernacularName object
                 case "http://rs.gbif.org/terms/1.0/VernacularName":
-                    name = extension_line.data["http://rs.tdwg.org/dwc/terms/vernacularName"]
+                    vname = extension_line.data["http://rs.tdwg.org/dwc/terms/vernacularName"]
                     lang = extension_line.data["http://purl.org/dc/terms/language"]
-                    vname = names[urlencode(f"{count}_{name}")] # Count added for prohibiting collisions
-                    g.add((vname, RDF.type, onto.VernacularName))
-                    g.add((vname, RDFS.label, Literal(name, lang=lang)))
-                    g.add((entity, dwc.vernacularName, vname))
+                    vname_object = names[urlencode(f"{crow.id}_{vname}")]  # ID added for prohibiting collisions
+                    g.add((vname_object, RDF.type, onto.VernacularName))
+                    g.add((vname_object, RDFS.label, Literal(vname, lang=lang)))
+                    g.add((entity, dwc.vernacularName, vname_object))
 
                 case "http://rs.gbif.org/terms/1.0/Distribution":
                     # The dwc-extension 'Distribution' can't be parsed to normal triples due to its structure. To
