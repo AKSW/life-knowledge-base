@@ -69,6 +69,11 @@ onto:synonymOf a owl:TransitiveProperty ;
     rdfs:label "synonym of" ;
     rdfs:domain onto:ScientificName ;
     rdfs:range onto:ScientificName ;
+    owl:propertyChainAxiom (
+        [ owl:inverseOf dwc:scientificName ]
+        dwc:acceptedNameUsageID
+        dwc:scientificName
+    ) ;
     dcterms:isPartOf onto: .
 
 ###
