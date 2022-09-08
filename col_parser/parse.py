@@ -112,6 +112,11 @@ with DwCAReader(path=sys.argv[1]) as dwca:
                 case "http://rs.gbif.org/terms/1.0/VernacularName":
                     vname = extension_line.data["http://rs.tdwg.org/dwc/terms/vernacularName"]
                     lang = extension_line.data["http://purl.org/dc/terms/language"]
+                    match lang:
+                        case "eng":
+                            lang = "en"
+                        case "deu":
+                            lang = "de"
                     vname_object = names[urlencode(f"{crow.id}_{vname}")]  # ID added for prohibiting collisions
                     g.add((vname_object, RDF.type, onto.VernacularName))
                     g.add((vname_object, RDFS.label, Literal(vname, lang=lang)))
