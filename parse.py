@@ -13,12 +13,13 @@ if len(sys.argv) < 2:
     print("Please give the input file as an argument")
     exit(1)
 
-# If positiv second arg was given, use it as N_taxons (max number to parse)s
+# If positiv second arg was given, use it as N_taxons (max number to parse)
 if len(sys.argv) > 2 and int(sys.argv[2]) > 0:
     N_taxons = int(sys.argv[2])
 else:
     N_taxons = 0
 
+# Declare common name spaces
 dwc = Namespace("http://rs.tdwg.org/dwc/terms/")
 taxons = Namespace("http://col.htwk-leipzig.de/taxon/")
 names = Namespace("http://col.htwk-leipzig.de/name/")
